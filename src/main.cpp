@@ -1,9 +1,22 @@
 #include <Arduino.h>
+#include <ESP8266WiFi.h>
 
 void setup() {
-    // put your setup code here, to run once:
+    Serial.begin(115200);
+    Serial.println();
+
+    WiFi.mode(WIFI_STA);
+    WiFi.disconnect();
+    delay(100);
 }
 
 void loop() {
-    // put your main code here, to run repeatedly:
+    Serial.println("Scanning...");
+    auto numFound = WiFi.scanNetworks();
+    Serial.printf("Number of nw found: %d\n", numFound);
+    for (int i = 0; i < numFound; ++ i ) {
+        Serial.println(WiFi.SSID(i));
+    }
+    Serial.println();
+    delay(3000);
 }
