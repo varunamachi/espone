@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.env.linux": {
+        "PATH": "/home/varun/.platformio/penv/bin:/home/varun/.platformio/penv:/home/varun/bin/go/bin:/home/varun/.local/bin:/home/varun/bin/go/bin:/home/varun/bin:/home/varun/.local/bin:/home/varun/bin/go/bin:/home/varun/.local/bin:/home/varun/bin/go/bin:/home/varun/bin:/home/varun/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/data/kode/go/bin:/home/varun/Bin:/home/varun/flutter/bin:/home/varun/flutter/bin/cache/dart-sdk/bin/:/home/varun/flutter/bin:/home/varun/flutter/bin/cache/dart-sdk/bin/:/data/kode/go/bin:/home/varun/Bin:/home/varun/flutter/bin:/home/varun/flutter/bin/cache/dart-sdk/bin/",
+        "PLATFORMIO_CALLER": "vscode"
+    }
+}
