@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 
-#include "Constants.h" 
+#include "Secrets.h" 
 
 void setup() {
     // Serial.begin(115200); 
@@ -13,8 +13,8 @@ void setup() {
 
     Serial.begin(115200);
     Serial.println();
-    
-    WiFi.begin(Constants::SSID, Constants::PASSWORD);
+     
+    WiFi.begin(Secrets::SSID, Secrets::PASSWORD);
     
     Serial.print("Connecting...");
     while(WiFi.status() != WL_CONNECTED) {
@@ -28,13 +28,13 @@ void setup() {
 
 void loop() {
     WiFiClient client;
-    Serial.printf("\n[Connecting to %s ... ", Constants::HOST);
-    if (client.connect(Constants::HOST, 80))
+    Serial.printf("\n[Connecting to %s ... ", Secrets::HOST);
+    if (client.connect(Secrets::HOST, 80))
     {
         Serial.println("connected]");   
         Serial.println("[Sending a request]");
         client.print(String("GET /") + " HTTP/1.1\r\n" +
-                     "Host: " + Constants::HOST + "\r\n" +
+                     "Host: " + Secrets::HOST + "\r\n" +
                      "Connection: close\r\n" +
                      "\r\n" );  
         Serial.println("[Response:]");
