@@ -1,7 +1,11 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 
+#include <RestClient.h>
+
 #include "Secrets.h" 
+
+ std::unique_ptr<RestClient> client = nullptr;
 
 void setup() {
     // Serial.begin(115200); 
@@ -24,32 +28,15 @@ void setup() {
     Serial.println();
     Serial.print("Connected, IP address: ");
     Serial.println(WiFi.localIP());
+    client = std::unique_ptr<RestClient>( new RestClient{ 
+        Secrets::HOST, 
+        443, 
+        Secrets::SSL_FP});
 }
 
 void loop() {
-    WiFiClient client;
-    Serial.printf("\n[Connecting to %s ... ", Secrets::HOST);
-    if (client.connect(Secrets::HOST, 80))
-    {
-        Serial.println("connected]");   
-        Serial.println("[Sending a request]");
-        client.print(String("GET /") + " HTTP/1.1\r\n" +
-                     "Host: " + Secrets::HOST + "\r\n" +
-                     "Connection: close\r\n" +
-                     "\r\n" );  
-        Serial.println("[Response:]");
-        while (client.connected()) {
-            if (client.available()) {
-              String line = client.readStringUntil('\n');
-              Serial.println(line);
-            }
-        }
-        client.stop();
-        Serial.println("\n[Disconnected]");
+    if (client != nullptr) {
+        String resp;
+        client->get("sprw/api/v0/login", &resp);
     }
-    else {
-        Serial.println("connection failed!]");
-        client.stop();
-    }
-    delay(5000);
 }
