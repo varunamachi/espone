@@ -1,5 +1,7 @@
 #include "RestClient.h"
 
+// #define HTTP_DEBUG
+
 #ifdef HTTP_DEBUG
 #define HTTP_DEBUG_PRINT(string) (Serial.print(string))
 #endif
@@ -294,7 +296,7 @@ int RestClient::readResponse(String* response) {
         HTTP_DEBUG_PRINT("HTTPS client closed \n");
     }else {
         while (client.connected()) {
-            HTTP_DEBUG_PRINT(".");
+            // HTTP_DEBUG_PRINT(".");
 
             if (client.available()) {
                 HTTP_DEBUG_PRINT(",");
