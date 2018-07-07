@@ -10,4 +10,5 @@ struct Secrets {
     static const int PORT;
     static const char *ENTITY_ID;
     static const char *ENTITY_OWNER; 
+    static const char *HOST_INFO;
 }; 

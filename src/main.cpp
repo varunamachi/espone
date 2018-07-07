@@ -11,32 +11,36 @@ String response;
 int status;
 StaticJsonBuffer<500> buffer;
 
-void login() { 
-    // auto data = String{"{"} 
-    //         + "entityID: \"" + Secrets::ENTITY_ID + "\",\n" 
-    //         + "owner: \"" + Secrets::ENTITY_OWNER + "\",\n" 
-    //         + "secret: \"" + Secrets::SECRET + "\"\n}";
+bool login() { 
     auto &obj = buffer.createObject();
     obj["entityID"] = Secrets::ENTITY_ID;
     obj["owner"] = Secrets::ENTITY_OWNER;
     obj["secret"] = Secrets::SECRET;
     String data;
     obj.printTo(data);
-    status = client->post("sprw/api/v0/entity/auth", data.c_str(), &response);
+    Serial.println(data);
+    status = client->post("/sprw/api/v0/entity/auth", data.c_str(), &response);
+    bool result = false;
     if (status == 200) {
         auto &root = buffer.parseObject(response);
-        const char * token = root["token"];
+        const char * token = root["data"]["token"];
         Serial.println(token);
         auto hdr = String("Authorization: Bearer ") + token;
         client->setHeader(hdr.c_str());
+        client->setHeader(Secrets::HOST_INFO);
+        result = true;
     }
-    Serial.printf("Status: %d\n Response: %s\n", status, response.c_str());
+    Serial.printf("Status: %d\n\n Response: %s\n", status, response.c_str());
+    return result;
 } 
 
 void ping() {
     if (client != nullptr) {
+        response = "";
         status = client->get("/sprw/api/v0/ping", &response);
-        Serial.printf("Status: %d\n Response: %s\n", status, response.c_str());
+        Serial.printf("Status: %d\n\n Response: %s\n\n", 
+            status, 
+            response.c_str());
     } else {
         Serial.println("Invalid client configuration"); 
     }
@@ -75,7 +79,11 @@ void setup() {
 } 
 
 void loop() {
-    if (Serial.available()) {
+    auto av = Serial.available();
+    if (av != 0) {
+        for (auto i = 0; i < av; ++ i) {
+            Serial.read();
+        }
         ping();
     }
 }

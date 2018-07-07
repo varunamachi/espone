@@ -9,6 +9,7 @@
     const char *Secrets::PASSWORD = "passcode";
     const char *Secrets::SECRET = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
     const char *Secrets::HOST = "example.com";
+    const char *Secrets::HOST_INFO = "Host: example.com:443";
     const bool Secrets::USE_SSL = true;
     const int Secrets::PORT = 443;
     const char *Secrets::ENTITY_ID = "ffffffffffffffffffffffff";
