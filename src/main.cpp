@@ -9,9 +9,10 @@
 std::unique_ptr<RestClient> client = nullptr;
 String response;
 int status;
-StaticJsonBuffer<500> buffer;
+char authHeader[500] = "Authorization: Bearer ";
 
 bool login() { 
+    StaticJsonBuffer<2048> buffer;
     auto &obj = buffer.createObject();
     obj["entityID"] = Secrets::ENTITY_ID;
     obj["owner"] = Secrets::ENTITY_OWNER;
@@ -24,28 +25,12 @@ bool login() {
     if (status == 200) {
         auto &root = buffer.parseObject(response);
         const char * token = root["data"]["token"];
-        Serial.println(token);
-        auto hdr = String("Authorization: Bearer ") + token;
-        client->setHeader(hdr.c_str());
-        client->setHeader(Secrets::HOST_INFO);
+        strcat(authHeader, token);
         result = true;
     }
     Serial.printf("Status: %d\n\n Response: %s\n", status, response.c_str());
     return result;
 } 
-
-void ping() {
-    if (client != nullptr) {
-        response = "";
-        status = client->get("/sprw/api/v0/ping", &response);
-        Serial.printf("Status: %d\n\n Response: %s\n\n", 
-            status, 
-            response.c_str());
-    } else {
-        Serial.println("Invalid client configuration"); 
-    }
-    delay(5000); 
-}
 
 void setup() {
     Serial.begin(115200);
@@ -54,8 +39,8 @@ void setup() {
     WiFi.begin(Secrets::SSID, Secrets::PASSWORD);
     
     Serial.printf("Config: \n\tHost: %s "
-        "\n\tPort: %d", Secrets::HOST, Secrets::PORT);
-    Serial.print("Connecting...");
+        "\n\tPort: %d\n", Secrets::HOST, Secrets::PORT);
+    Serial.println("Connecting...");
     while(WiFi.status() != WL_CONNECTED) {
         delay(500);
         Serial.print(".");
@@ -78,12 +63,26 @@ void setup() {
     login();
 } 
 
-void loop() {
-    auto av = Serial.available();
-    if (av != 0) {
-        for (auto i = 0; i < av; ++ i) {
-            Serial.read();
-        }
-        ping();
+void ping() {
+    if (client != nullptr) {
+        response = "";
+        client->setHeader(authHeader);
+        status = client->get("/sprw/api/v0/ping", &response);
+        Serial.printf("Status: %d\n\n Response: %s\n\n", 
+            status, 
+            response.c_str());
+    } else {
+        Serial.println("Invalid client configuration"); 
     }
+    delay(5000); 
+}
+
+void loop() {
+    auto av = Serial.readString();
+    if (av.length() != 0) {
+        if (av.startsWith("ping")) {
+            ping();
+        }
+    }
+    delay(100);
 }

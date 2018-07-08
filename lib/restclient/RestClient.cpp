@@ -185,10 +185,10 @@ int RestClient::request(const char* method, const char* path,
     HTTP_DEBUG_PRINT("REQUEST: \n");
 
     String request = String(method) + " " + String(path) + " HTTP/1.1\r\n";
+    request += "Host: " + String(host) +  ":" + String(port) + "\r\n";
     for(int i=0; i<num_headers; i++){
         request += String(headers[i]) + "\r\n";
     }
-    request += "Host: " + String(host) +  ":" + String(port) + "\r\n";
     request += "Connection: close\r\n";
     if(body != NULL){
         char contentLength[30];
@@ -299,7 +299,7 @@ int RestClient::readResponse(String* response) {
             // HTTP_DEBUG_PRINT(".");
 
             if (client.available()) {
-                HTTP_DEBUG_PRINT(",");
+                // HTTP_DEBUG_PRINT(",");
 
                 char c = client.read();
                 HTTP_DEBUG_PRINT(c);
